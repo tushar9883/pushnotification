@@ -2,6 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pushnotification/page/page_one.dart';
+import 'package:pushnotification/page/page_threess.dart';
+import 'package:pushnotification/page/page_two.dart';
 import 'package:pushnotification/pushniti.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -37,9 +40,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final FirebaseMessaging _messaging;
-
   PushNotification? _notificationInfo;
   String? token;
+
+  final check = TextEditingController();
 
   void registerNotification() async {
     await Firebase.initializeApp();
@@ -74,17 +78,83 @@ class _HomePageState extends State<HomePage> {
         );
 
         setState(() {
+          print("change${message.notification?.body}121212121");
+          // if (message.notification?.body == 'first') {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => One(
+          //               token: token!,
+          //             )),
+          //   );
+          // } else if (message.notification?.body == 'second') {
+          //   print("dataaaaaaaaaaaaaa");
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => Two(
+          //               token: token!,
+          //             )),
+          //   );
+          // } else if (message.notification?.body == "Three") {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => Three(
+          //               token: token!,
+          //             )),
+          //   );
+          // } else {
+          //   "Something Wrong";
+          // }
           _notificationInfo = notification;
         });
 
         if (_notificationInfo != null) {
           // For displaying the notification as an overlay
-          showSimpleNotification(
-            Text(_notificationInfo!.title!),
-            subtitle: Text(_notificationInfo!.body!),
-            background: Colors.cyan.shade700,
-            duration: const Duration(seconds: 2),
-          );
+          showOverlayNotification(
+              (context) => Material(
+                    child: ListTile(
+                      onTap: () {
+                        if (message.notification?.body == 'first') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => One(
+                                      token: token!,
+                                    )),
+                          );
+                        } else if (message.notification?.body == 'second') {
+                          print("dataaaaaaaaaaaaaa");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Two(
+                                      token: token!,
+                                    )),
+                          );
+                        } else if (message.notification?.body == "Three") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Three(
+                                      token: token!,
+                                    )),
+                          );
+                        } else {
+                          "Something Wrong";
+                        }
+                        print('test');
+                      },
+                      title: Text(
+                        _notificationInfo!.title!,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      subtitle: Text(_notificationInfo!.body!),
+                      tileColor: Colors.lightGreen,
+                    ),
+                  ),
+              duration: const Duration(seconds: 3));
         }
       });
     } else {
@@ -107,6 +177,33 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _notificationInfo = notification;
+        if (initialMessage.notification?.body == 'first') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => One(
+                      token: token!,
+                    )),
+          );
+        } else if (initialMessage.notification?.body == 'second') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Two(
+                      token: token!,
+                    )),
+          );
+        } else if (initialMessage.notification?.body == "Three") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Three(
+                      token: token!,
+                    )),
+          );
+        } else {
+          "Something Wrong";
+        }
       });
     }
   }
@@ -126,6 +223,30 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _notificationInfo = notification;
+        if (message.notification?.body == 'first') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => One(token: token!)),
+          );
+        } else if (message.notification?.body == 'second') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Two(
+                      token: token!,
+                    )),
+          );
+        } else if (message.notification?.body == "Three") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Three(
+                      token: token!,
+                    )),
+          );
+        } else {
+          "Something Wrong";
+        }
       });
     });
 
@@ -135,49 +256,70 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: const Text(
-              'Notifications',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Center(
+              child: Text(
+                'Notifications',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16.0),
-          const SizedBox(height: 16.0),
-          _notificationInfo != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Text(
-                        'TITLE: ${_notificationInfo!.dataTitle ?? _notificationInfo!.title}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
+            TextField(
+              controller: check,
+            ),
+            Center(
+              //child: Text(token),
+              child: ElevatedButton(
+                onPressed: () {
+                  FirebaseMessaging.instance.getToken().then((value) async {
+                    print("TOKEN-----------$value");
+                    token = value;
+                  });
+                  check.text = token!;
+                },
+                child: const Text("Click"),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
+            _notificationInfo != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(token!),
+                      ),
+                      Center(
+                        child: Text(
+                          'TITLE: ${_notificationInfo!.dataTitle ?? _notificationInfo!.title}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Center(
-                      child: Text(
-                        'BODY: ${_notificationInfo!.dataBody ?? _notificationInfo!.body}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
+                      const SizedBox(height: 8.0),
+                      Center(
+                        child: Text(
+                          'BODY: ${_notificationInfo!.dataBody ?? _notificationInfo!.body}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              : Container(),
-        ],
+                    ],
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }

@@ -37,14 +37,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final FirebaseMessaging _messaging;
-  //late int _totalNotifications;
+
   PushNotification? _notificationInfo;
+  String? token;
 
   void registerNotification() async {
     await Firebase.initializeApp();
     _messaging = FirebaseMessaging.instance;
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.instance.getToken().then((value) async {
+      print("TOKEN-----------$value");
+      token = value;
+    });
 
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
@@ -70,16 +75,14 @@ class _HomePageState extends State<HomePage> {
 
         setState(() {
           _notificationInfo = notification;
-          //_totalNotifications++;
         });
 
         if (_notificationInfo != null) {
           // For displaying the notification as an overlay
           showSimpleNotification(
             Text(_notificationInfo!.title!),
-            //leading: NotificationBadge(totalNotifications: _totalNotifications),
             subtitle: Text(_notificationInfo!.body!),
-            background: Colors.pink.shade700,
+            background: Colors.cyan.shade700,
             duration: const Duration(seconds: 2),
           );
         }
@@ -89,7 +92,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // For handling notification when the app is in terminated state
   checkForInitialMessage() async {
     await Firebase.initializeApp();
     RemoteMessage? initialMessage =
@@ -105,19 +107,15 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _notificationInfo = notification;
-        // _totalNotifications++;
       });
     }
   }
 
   @override
   void initState() {
-    // _totalNotifications = 0;
     registerNotification();
     checkForInitialMessage();
 
-    // For handling notification when the app is in background
-    // but not terminated
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       PushNotification notification = PushNotification(
         title: message.notification?.title,
@@ -128,7 +126,6 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _notificationInfo = notification;
-        //_totalNotifications++;
       });
     });
 
@@ -140,35 +137,41 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'App for capturing Firebase Push Notifications',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
+          Center(
+            child: const Text(
+              'Notifications',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
             ),
           ),
           const SizedBox(height: 16.0),
-          //NotificationBadge(totalNotifications: _totalNotifications),
           const SizedBox(height: 16.0),
           _notificationInfo != null
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'TITLE: ${_notificationInfo!.dataTitle ?? _notificationInfo!.title}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                    Center(
+                      child: Text(
+                        'TITLE: ${_notificationInfo!.dataTitle ?? _notificationInfo!.title}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    Text(
-                      'BODY: ${_notificationInfo!.dataBody ?? _notificationInfo!.body}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                    Center(
+                      child: Text(
+                        'BODY: ${_notificationInfo!.dataBody ?? _notificationInfo!.body}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ],

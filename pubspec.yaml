@@ -45,8 +45,9 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.9.3
 flutter_icons:
-  android: true
+  android: "launch_icon"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/icon/icon.png"
 
 # assets ma icon ma ek png nakhi devani pachhi upr mujab kri devanu pachhi terminal ma jai aa comand run krva no

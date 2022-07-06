@@ -5,7 +5,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pushnotification/page/page_one.dart';
 import 'package:pushnotification/page/page_threess.dart';
 import 'package:pushnotification/page/page_two.dart';
-import 'package:pushnotification/pushniti.dart';
+
+import 'Pushnoti.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");

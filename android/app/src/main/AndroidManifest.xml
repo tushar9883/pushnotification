@@ -11,7 +11,7 @@
         android:label="pushnotification">
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="Default"/>
+            android:resource="@drawable/ic_stat_bike"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
